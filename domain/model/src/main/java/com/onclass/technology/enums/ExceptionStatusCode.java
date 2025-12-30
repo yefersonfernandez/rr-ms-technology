@@ -1,4 +1,4 @@
-package com.onclass.technology.model.technology.enums;
+package com.onclass.technology.enums;
 
 public enum ExceptionStatusCode {
     BAD_REQUEST("400-BD"),

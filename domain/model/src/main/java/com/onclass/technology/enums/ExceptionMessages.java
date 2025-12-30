@@ -1,4 +1,4 @@
-package com.onclass.technology.model.technology.enums;
+package com.onclass.technology.enums;
 
 import lombok.Getter;
 

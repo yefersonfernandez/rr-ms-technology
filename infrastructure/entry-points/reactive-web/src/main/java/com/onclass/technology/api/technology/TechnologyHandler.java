@@ -1,11 +1,10 @@
 package com.onclass.technology.api.technology;
 
-import com.onclass.technology.api.config.TechnologyPath;
 import com.onclass.technology.api.dto.request.TechnologyRequestDto;
 import com.onclass.technology.api.mapper.TechnologyMapper;
 import com.onclass.technology.api.utils.HandlersResponseUtil;
 import com.onclass.technology.api.utils.ValidatorUtil;
-import com.onclass.technology.model.technology.enums.ExceptionStatusCode;
+import com.onclass.technology.enums.ExceptionStatusCode;
 import com.onclass.technology.usecase.technology.TechnologyUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
