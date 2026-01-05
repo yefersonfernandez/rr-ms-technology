@@ -2,7 +2,6 @@ package com.onclass.technology.api.technology;
 
 import com.onclass.technology.api.dto.request.TechnologyRequestDto;
 import com.onclass.technology.api.mapper.TechnologyMapper;
-import com.onclass.technology.api.utils.HandlersResponseUtil;
 import com.onclass.technology.api.utils.ValidatorUtil;
 import com.onclass.technology.enums.ExceptionStatusCode;
 import com.onclass.technology.usecase.technology.TechnologyUseCase;
@@ -13,6 +12,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
+
+import static com.onclass.technology.api.utils.HandlersResponseUtil.buildBodySuccessResponse;
 
 @Component
 @RequiredArgsConstructor
@@ -30,9 +33,9 @@ public class TechnologyHandler {
                 .map(technologyMapper::toModel)
                 .flatMap(technologyUseCase::saveTechnology)
                 .map(technologyMapper::toTechnologyResponseDto)
-                .flatMap(savedTechnology -> ServerResponse.ok()
+                .flatMap(savedTechnology -> ServerResponse.created(URI.create(""))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(HandlersResponseUtil.buildBodySuccessResponse(ExceptionStatusCode.CREATED.status(), savedTechnology) )
+                        .bodyValue(buildBodySuccessResponse(ExceptionStatusCode.CREATED.status(), savedTechnology))
                 );
     }
 }
