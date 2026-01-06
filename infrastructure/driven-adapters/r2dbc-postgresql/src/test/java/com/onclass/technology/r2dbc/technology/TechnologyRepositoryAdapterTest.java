@@ -81,5 +81,26 @@ class TechnologyRepositoryAdapterTest {
                 .expectNext(count)
                 .verifyComplete();
     }
-}
 
+    @Test
+    @DisplayName("findTechnologyById should return technology when found")
+    void findTechnologyById_shouldReturnTechnology() {
+        Long id = 1L;
+        when(repository.findById(id)).thenReturn(Mono.just(technologyEntity));
+        when(mapper.map(technologyEntity, Technology.class)).thenReturn(technology);
+
+        StepVerifier.create(adapter.findTechnologyById(id))
+                .expectNext(technology)
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("findTechnologyById should complete empty when not found")
+    void findTechnologyById_shouldReturnEmptyWhenNotFound() {
+        Long id = 2L;
+        when(repository.findById(id)).thenReturn(Mono.empty());
+
+        StepVerifier.create(adapter.findTechnologyById(id))
+                .verifyComplete();
+    }
+}

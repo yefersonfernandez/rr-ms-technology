@@ -43,4 +43,29 @@ class CapabilityTechnologyRepositoryAdapterTest {
         StepVerifier.create(adapter.saveAll(capabilityId, technologyIds))
                 .verifyComplete();
     }
+
+    @Test
+    @DisplayName("findTechnologyIdsByCapabilityId should return technology ids")
+    void findTechnologyIdsByCapabilityId_shouldReturnIds() {
+        Long capabilityId = 1L;
+        List<CapabilityTechnologyEntity> entities = List.of(
+                CapabilityTechnologyEntity.builder().capabilityId(capabilityId).technologyId(1L).build(),
+                CapabilityTechnologyEntity.builder().capabilityId(capabilityId).technologyId(2L).build()
+        );
+        when(repository.findAllByCapabilityId(capabilityId)).thenReturn(Flux.fromIterable(entities));
+
+        StepVerifier.create(adapter.findTechnologyIdsByCapabilityId(capabilityId))
+                .expectNext(1L, 2L)
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("findTechnologyIdsByCapabilityId should return empty when none found")
+    void findTechnologyIdsByCapabilityId_shouldReturnEmpty() {
+        Long capabilityId = 2L;
+        when(repository.findAllByCapabilityId(capabilityId)).thenReturn(Flux.empty());
+
+        StepVerifier.create(adapter.findTechnologyIdsByCapabilityId(capabilityId))
+                .verifyComplete();
+    }
 }
