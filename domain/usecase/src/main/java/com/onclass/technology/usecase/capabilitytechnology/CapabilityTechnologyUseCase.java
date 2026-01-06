@@ -5,9 +5,11 @@ import com.onclass.technology.exceptions.InvalidCountException;
 import com.onclass.technology.exceptions.NotFoundException;
 import com.onclass.technology.exceptions.RepeatedTechnologiesException;
 import com.onclass.technology.model.capabilitytechnology.gateways.CapabilityTechnologyRepositoryPort;
+import com.onclass.technology.model.technology.Technology;
 import com.onclass.technology.model.technology.gateways.TechnologyRepositoryPort;
 import com.onclass.technology.usecase.utils.CapabilityTechnologyUtils;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.List;
 
@@ -33,5 +35,10 @@ public class CapabilityTechnologyUseCase {
                         .thenReturn(ids))
                 .flatMap(ids -> capabilityTechnologyRepositoryPort.saveAll(capabilityId, ids))
                 .then();
+    }
+
+    public Flux<Technology> getTechnologiesByCapabilityId(Long capabilityId) {
+        return capabilityTechnologyRepositoryPort.findTechnologyIdsByCapabilityId(capabilityId)
+                .flatMap(technologyRepositoryPort::findTechnologyById);
     }
 }
