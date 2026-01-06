@@ -1,6 +1,6 @@
-package com.onclass.technology.model.technology.exceptions;
+package com.onclass.technology.exceptions;
 
-import com.onclass.technology.model.technology.enums.ExceptionStatusCode;
+import com.onclass.technology.enums.ExceptionStatusCode;
 
 public class TechnologyAlreadyExistsException extends BusinessException {
 

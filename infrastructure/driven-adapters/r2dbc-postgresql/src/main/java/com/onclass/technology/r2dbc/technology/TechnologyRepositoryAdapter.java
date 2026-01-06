@@ -8,6 +8,8 @@ import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Repository
 public class TechnologyRepositoryAdapter extends ReactiveAdapterOperations<
         Technology,
@@ -27,6 +29,12 @@ public class TechnologyRepositoryAdapter extends ReactiveAdapterOperations<
 
     @Override
     public Mono<Technology> findTechnologyByName(String name) {
-        return repository.findByNameIgnoreCase(name);
+        return repository.findByNameIgnoreCase(name)
+                .map(super::toEntity);
+    }
+
+    @Override
+    public Mono<Long> countByIds(List<Long> technologyIds) {
+        return repository.countByIdIn(technologyIds);
     }
 }

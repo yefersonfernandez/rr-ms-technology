@@ -2,8 +2,8 @@ package com.onclass.technology.api.exception;
 
 import com.onclass.technology.api.dto.response.ApiResponseDto;
 import com.onclass.technology.api.utils.HandlersResponseUtil;
-import com.onclass.technology.model.technology.enums.ExceptionStatusCode;
-import com.onclass.technology.model.technology.exceptions.BusinessException;
+import com.onclass.technology.enums.ExceptionStatusCode;
+import com.onclass.technology.exceptions.BusinessException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.webflux.error.DefaultErrorAttributes;

@@ -37,3 +37,4 @@ springdoc:
 routes:
   paths:
     technologies: "/technology/api/v1/technologies"
+    associate-technologies: "/technology/api/v1/capabilities/associate-technologies"

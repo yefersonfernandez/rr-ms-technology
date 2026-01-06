@@ -1,8 +1,8 @@
 package com.onclass.technology.usecase.technology;
 
 import com.onclass.technology.model.technology.Technology;
-import com.onclass.technology.model.technology.enums.ExceptionMessages;
-import com.onclass.technology.model.technology.exceptions.TechnologyAlreadyExistsException;
+import com.onclass.technology.enums.ExceptionMessages;
+import com.onclass.technology.exceptions.TechnologyAlreadyExistsException;
 import com.onclass.technology.model.technology.gateways.TechnologyRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
