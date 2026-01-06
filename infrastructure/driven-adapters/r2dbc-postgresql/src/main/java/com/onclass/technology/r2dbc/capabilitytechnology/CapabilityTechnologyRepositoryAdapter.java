@@ -40,4 +40,10 @@ public class CapabilityTechnologyRepositoryAdapter extends ReactiveAdapterOperat
                 .then()
                 .as(transactionalOperator::transactional);
     }
+
+    @Override
+    public Flux<Long> findTechnologyIdsByCapabilityId(Long capabilityId) {
+        return repository.findAllByCapabilityId(capabilityId)
+                .map(CapabilityTechnologyEntity::getTechnologyId);
+    }
 }

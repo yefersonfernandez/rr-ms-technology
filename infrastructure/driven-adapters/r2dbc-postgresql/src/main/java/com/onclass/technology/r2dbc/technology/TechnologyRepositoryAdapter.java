@@ -37,4 +37,10 @@ public class TechnologyRepositoryAdapter extends ReactiveAdapterOperations<
     public Mono<Long> countByIds(List<Long> technologyIds) {
         return repository.countByIdIn(technologyIds);
     }
+
+    @Override
+    public Mono<Technology> findTechnologyById(Long technologyId) {
+        return repository.findById(technologyId)
+                .map(super::toEntity);
+    }
 }

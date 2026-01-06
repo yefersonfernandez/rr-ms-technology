@@ -5,12 +5,14 @@ import com.onclass.technology.exceptions.InvalidCountException;
 import com.onclass.technology.exceptions.NotFoundException;
 import com.onclass.technology.exceptions.RepeatedTechnologiesException;
 import com.onclass.technology.model.capabilitytechnology.gateways.CapabilityTechnologyRepositoryPort;
+import com.onclass.technology.model.technology.Technology;
 import com.onclass.technology.model.technology.gateways.TechnologyRepositoryPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import java.util.List;
@@ -32,6 +34,10 @@ class CapabilityTechnologyUseCaseTest {
     private static final List<Long> VALID_TECH_IDS = List.of(1L, 2L, 3L);
     private static final List<Long> REPEATED_TECH_IDS = List.of(1L, 1L, 2L);
     private static final List<Long> EMPTY_TECH_IDS = List.of();
+
+    private static final List<Long> TECH_IDS = List.of(1L, 2L);
+    private static final Technology TECH1 = Technology.builder().id(1L).name("Java").build();
+    private static final Technology TECH2 = Technology.builder().id(2L).name("Spring").build();
 
     @Test
     void associateTechnologies_shouldThrowExceptionWhenTechnologiesCountInvalid() {
@@ -63,6 +69,40 @@ class CapabilityTechnologyUseCaseTest {
         when(technologyRepositoryPort.countByIds(VALID_TECH_IDS)).thenReturn(Mono.just((long) VALID_TECH_IDS.size()));
         when(capabilityTechnologyRepositoryPort.saveAll(CAPABILITY_ID, VALID_TECH_IDS)).thenReturn(Mono.empty());
         StepVerifier.create(capabilityTechnologyUseCase.associateTechnologies(CAPABILITY_ID, VALID_TECH_IDS))
+                .verifyComplete();
+    }
+
+    @Test
+    void getTechnologiesByCapabilityId_shouldReturnTechnologies() {
+        when(capabilityTechnologyRepositoryPort.findTechnologyIdsByCapabilityId(CAPABILITY_ID))
+                .thenReturn(Flux.fromIterable(TECH_IDS));
+        when(technologyRepositoryPort.findTechnologyById(1L)).thenReturn(Mono.just(TECH1));
+        when(technologyRepositoryPort.findTechnologyById(2L)).thenReturn(Mono.just(TECH2));
+
+        StepVerifier.create(capabilityTechnologyUseCase.getTechnologiesByCapabilityId(CAPABILITY_ID))
+                .expectNext(TECH1)
+                .expectNext(TECH2)
+                .verifyComplete();
+    }
+
+    @Test
+    void getTechnologiesByCapabilityId_shouldReturnEmptyWhenNoTechnologies() {
+        when(capabilityTechnologyRepositoryPort.findTechnologyIdsByCapabilityId(CAPABILITY_ID))
+                .thenReturn(Flux.empty());
+
+        StepVerifier.create(capabilityTechnologyUseCase.getTechnologiesByCapabilityId(CAPABILITY_ID))
+                .verifyComplete();
+    }
+
+    @Test
+    void getTechnologiesByCapabilityId_shouldSkipMissingTechnologies() {
+        when(capabilityTechnologyRepositoryPort.findTechnologyIdsByCapabilityId(CAPABILITY_ID))
+                .thenReturn(Flux.fromIterable(TECH_IDS));
+        when(technologyRepositoryPort.findTechnologyById(1L)).thenReturn(Mono.empty());
+        when(technologyRepositoryPort.findTechnologyById(2L)).thenReturn(Mono.just(TECH2));
+
+        StepVerifier.create(capabilityTechnologyUseCase.getTechnologiesByCapabilityId(CAPABILITY_ID))
+                .expectNext(TECH2)
                 .verifyComplete();
     }
 }

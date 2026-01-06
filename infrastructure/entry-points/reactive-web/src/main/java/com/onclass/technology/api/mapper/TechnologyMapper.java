@@ -2,6 +2,7 @@ package com.onclass.technology.api.mapper;
 
 import com.onclass.technology.api.dto.request.TechnologyRequestDto;
 import com.onclass.technology.api.dto.response.TechnologyResponseDto;
+import com.onclass.technology.api.dto.response.TechnologySummaryDto;
 import com.onclass.technology.model.technology.Technology;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -14,4 +15,5 @@ import org.mapstruct.ReportingPolicy;
 public interface TechnologyMapper {
     TechnologyResponseDto toTechnologyResponseDto(Technology technology);
     Technology toModel(TechnologyRequestDto technologyRequestDto);
+    TechnologySummaryDto toTechnologySummaryDto(Technology technology);
 }

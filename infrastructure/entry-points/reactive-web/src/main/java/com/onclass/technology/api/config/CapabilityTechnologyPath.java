@@ -9,5 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "routes.paths")
 public class CapabilityTechnologyPath {
     private String associateTechnologies;
-}
+    private String getTechnologiesByCapabilityId;
 
+    public String getTechnologiesByCapabilityId() {
+        return getTechnologiesByCapabilityId;
+    }
+}
