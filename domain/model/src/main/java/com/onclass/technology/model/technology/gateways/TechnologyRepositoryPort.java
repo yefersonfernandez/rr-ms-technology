@@ -8,4 +8,5 @@ public interface TechnologyRepositoryPort {
     Mono<Technology> saveTechnology(Technology technology);
     Mono<Technology> findTechnologyByName(String name);
     Mono<Long> countByIds(List<Long> technologyIds);
+    Mono<Technology> findTechnologyById(Long technologyId);
 }
