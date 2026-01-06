@@ -38,3 +38,4 @@ routes:
   paths:
     technologies: "/technology/api/v1/technologies"
     associate-technologies: "/technology/api/v1/capabilities/associate-technologies"
+    get-technologies-by-capability-id: "/technology/api/v1/capabilities/{capabilityId}/technologies"
