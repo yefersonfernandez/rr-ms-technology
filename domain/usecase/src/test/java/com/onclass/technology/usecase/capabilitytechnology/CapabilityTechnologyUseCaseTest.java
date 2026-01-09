@@ -16,8 +16,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import java.util.List;
-import static com.onclass.technology.constants.CapabilityConstants.MAX_TECHS;
-import static com.onclass.technology.constants.CapabilityConstants.MIN_TECHS;
+import static com.onclass.technology.constants.TechnologyConstants.MAX_TECHS;
+import static com.onclass.technology.constants.TechnologyConstants.MIN_TECHS;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
