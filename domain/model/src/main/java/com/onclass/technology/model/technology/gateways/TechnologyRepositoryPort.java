@@ -9,4 +9,5 @@ public interface TechnologyRepositoryPort {
     Mono<Technology> findTechnologyByName(String name);
     Mono<Long> countByIds(List<Long> technologyIds);
     Mono<Technology> findTechnologyById(Long technologyId);
+    Mono<Void> deleteTechnologiesByIds(List<Long> technologyIds);
 }
