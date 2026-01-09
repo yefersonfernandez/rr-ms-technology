@@ -32,10 +32,15 @@ public class CapabilityTechnologyOpenApi {
     private static final String OPERATION_DESC = "Associates a list of technologies to an existing capability.";
     private static final String OPERATION_GET_TECHS_BY_CAPABILITY = "getTechnologiesByCapabilityId";
     private static final String OPERATION_GET_TECHS_DESC = "Get all technologies associated with a capability by its ID.";
+    private static final String OPERATION_DELETE_TECHS_BY_CAPABILITY = "deleteTechnologiesByCapabilityIds";
+    private static final String OPERATION_DELETE_TECHS_DESC = "Delete all technologies associated with a list of capability IDs.";
     private static final String RESPONSE_TECH_LIST_DESC = "List of TechnologySummaryDto";
+    private static final String RESPONSE_DELETE_DESC = "No content if deletion is successful";
 
     private static final String PARAM_ID = "capabilityId";
     private static final String PARAM_ID_DESC = "Capability ID to search associated technologies";
+    private static final String PARAM_IDS = "ids";
+    private static final String PARAM_IDS_DESC = "List of capability IDs to delete associated technologies (comma separated)";
 
     public void associateTechnologies(Builder builder) {
         builder
@@ -98,6 +103,27 @@ public class CapabilityTechnologyOpenApi {
             .response(responseBuilder()
                 .responseCode(NOT_FOUND_CODE)
                 .description(NOT_FOUND_DESC))
+            .response(responseBuilder()
+                .responseCode(INTERNAL_ERROR_CODE)
+                .description(INTERNAL_ERROR_DESC));
+    }
+
+    public void deleteTechnologiesByCapabilityIds(Builder builder) {
+        builder
+            .operationId(OPERATION_DELETE_TECHS_BY_CAPABILITY)
+            .description(OPERATION_DELETE_TECHS_DESC)
+            .tag(TAG)
+            .parameter(parameterBuilder()
+                .name(PARAM_IDS)
+                .description(PARAM_IDS_DESC)
+                .in(ParameterIn.QUERY)
+                .required(true))
+            .response(responseBuilder()
+                .responseCode(String.valueOf(HttpStatus.NO_CONTENT.value()))
+                .description(RESPONSE_DELETE_DESC))
+            .response(responseBuilder()
+                .responseCode(BAD_REQUEST_CODE)
+                .description(BAD_REQUEST_DESC))
             .response(responseBuilder()
                 .responseCode(INTERNAL_ERROR_CODE)
                 .description(INTERNAL_ERROR_DESC));

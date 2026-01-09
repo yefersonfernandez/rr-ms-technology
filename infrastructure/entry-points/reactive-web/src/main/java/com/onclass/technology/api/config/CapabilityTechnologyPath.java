@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class CapabilityTechnologyPath {
     private String associateTechnologies;
     private String getTechnologiesByCapabilityId;
+    private String deleteTechnologiesByCapabilityIds;
 
     public String getTechnologiesByCapabilityId() {
         return getTechnologiesByCapabilityId;

@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-
 import java.net.URI;
 
+import static com.onclass.technology.api.constants.TechnologyHandlerLogMessages.*;
 import static com.onclass.technology.api.utils.HandlersResponseUtil.buildBodySuccessResponse;
 
 @Component
@@ -28,7 +28,7 @@ public class TechnologyHandler {
 
     public Mono<ServerResponse> listenSaveTechnology(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(TechnologyRequestDto.class)
-                .doOnNext(technologyRequest -> log.info("Received technology request: {}", technologyRequest))
+                .doOnNext(technologyRequest -> log.info(RECEIVED_TECHNOLOGY_REQUEST, technologyRequest))
                 .flatMap(validatorUtil::validate)
                 .map(technologyMapper::toModel)
                 .flatMap(technologyUseCase::saveTechnology)
