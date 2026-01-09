@@ -13,8 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.List;
 
-import static com.onclass.technology.constants.CapabilityConstants.MAX_TECHS;
-import static com.onclass.technology.constants.CapabilityConstants.MIN_TECHS;
+import static com.onclass.technology.constants.TechnologyConstants.*;
 import static com.onclass.technology.usecase.utils.CapabilityTechnologyUtils.isValidTechnologiesCount;
 
 @RequiredArgsConstructor
@@ -40,5 +39,30 @@ public class CapabilityTechnologyUseCase {
     public Flux<Technology> getTechnologiesByCapabilityId(Long capabilityId) {
         return capabilityTechnologyRepositoryPort.findTechnologyIdsByCapabilityId(capabilityId)
                 .flatMap(technologyRepositoryPort::findTechnologyById);
+    }
+
+    public Mono<Void> deleteTechnologiesByCapabilityIds(List<Long> capabilityIds) {
+        return capabilityTechnologyRepositoryPort.findTechnologyIdsByCapabilityIds(capabilityIds)
+                .distinct()
+                .collectList()
+                .filter(candidateTechIds -> !candidateTechIds.isEmpty())
+                .flatMapMany(Flux::fromIterable)
+                .flatMap(techId -> identifyOrphanTechnology(techId, capabilityIds))
+                .collectList()
+                .flatMap(this::executeOrphanTechnologiesDelete)
+                .then(capabilityTechnologyRepositoryPort.deleteAssociationsByCapabilityIds(capabilityIds));
+    }
+
+    private Mono<Long> identifyOrphanTechnology(Long techId, List<Long> capabilityIds) {
+        return capabilityTechnologyRepositoryPort.countOtherCapacityAssociations(techId, capabilityIds)
+                .filter(otherUsagesCount -> otherUsagesCount == ZERO_OTHER_ASSOCIATIONS)
+                .map(unused -> techId);
+    }
+
+    private Mono<Void> executeOrphanTechnologiesDelete(List<Long> orphanTechIds) {
+        return Mono.just(orphanTechIds)
+                .filter(ids -> !ids.isEmpty())
+                .flatMap(technologyRepositoryPort::deleteTechnologiesByIds)
+                .then();
     }
 }

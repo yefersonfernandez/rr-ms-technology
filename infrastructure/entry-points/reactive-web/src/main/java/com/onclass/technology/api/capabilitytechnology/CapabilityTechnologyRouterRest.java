@@ -20,6 +20,7 @@ public class CapabilityTechnologyRouterRest {
         return route()
                 .POST(capabilityTechnologyPath.getAssociateTechnologies(), handler::listenAssociateTechnologies, CapabilityTechnologyOpenApi::associateTechnologies)
                 .GET(capabilityTechnologyPath.getGetTechnologiesByCapabilityId(), handler::getTechnologiesByCapabilityId, CapabilityTechnologyOpenApi::getTechnologiesByCapabilityId)
+                .DELETE(capabilityTechnologyPath.getDeleteTechnologiesByCapabilityIds(), handler::listenDeleteTechnologiesByCapabilityIds, CapabilityTechnologyOpenApi::deleteTechnologiesByCapabilityIds)
                 .build();
     }
 }

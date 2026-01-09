@@ -8,8 +8,10 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-
 public interface CapabilityTechnologyRepository extends ReactiveCrudRepository<CapabilityTechnologyEntity, Long>, ReactiveQueryByExampleExecutor<CapabilityTechnologyEntity> {
-    Mono<Long> countAllByTechnologyIdIn(List<Long> technologyIds);
     Flux<CapabilityTechnologyEntity> findAllByCapabilityId(Long capabilityId);
+    Flux<CapabilityTechnologyEntity> findAllByCapabilityIdIn(List<Long> capabilityIds);
+    Mono<Long> countByTechnologyId(Long technologyId);
+    Mono<Long> countByTechnologyIdAndCapabilityIdNotIn(Long technologyId, List<Long> capabilityIds);
+    Mono<Void> deleteAllByCapabilityIdIn(List<Long> capabilityIds);
 }
