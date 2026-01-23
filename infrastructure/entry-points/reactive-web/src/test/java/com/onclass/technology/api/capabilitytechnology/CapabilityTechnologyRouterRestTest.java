@@ -27,7 +27,8 @@ import static org.mockito.Mockito.when;
 
 @TestPropertySource(properties = {
         "routes.paths.associate-technologies=/technology/api/v1/associate-technologies",
-        "routes.paths.get-technologies-by-capability-id=/technology/api/v1/capabilities/{capabilityId}/technologies"
+        "routes.paths.get-technologies-by-capability-id=/technology/api/v1/capabilities/{capabilityId}/technologies",
+        "routes.paths.delete-technologies-by-capability-ids=/technology/api/v1/capabilities"
 })
 @ContextConfiguration(classes = {CapabilityTechnologyRouterRest.class, CapabilityTechnologyHandler.class, CapabilityTechnologyPath.class})
 @WebFluxTest
@@ -42,6 +43,9 @@ class CapabilityTechnologyRouterRestTest {
     private static final Technology TECH2 = Technology.builder().id(2L).name("Spring").build();
     private static final TechnologySummaryDto TECH_SUMMARY_1 = TechnologySummaryDto.builder().id(1L).name("Java").build();
     private static final TechnologySummaryDto TECH_SUMMARY_2 = TechnologySummaryDto.builder().id(2L).name("Spring").build();
+    private static final String DELETE_TECHS_PATH = "/technology/api/v1/capabilities";
+    private static final String IDS_PARAM = "ids";
+    private static final List<Long> CAPABILITY_IDS = List.of(1L, 2L, 3L);
 
     @Autowired
     private WebTestClient webTestClient;
@@ -106,6 +110,29 @@ class CapabilityTechnologyRouterRestTest {
                 .jsonPath("$.data[0].name").isEqualTo("Java")
                 .jsonPath("$.data[1].id").isEqualTo(2)
                 .jsonPath("$.data[1].name").isEqualTo("Spring");
+    }
+
+    @Test
+    @DisplayName("DELETE /capabilities - listenDeleteTechnologiesByCapabilityIds: should return 204 when deletion is successful")
+    void deleteTechnologiesByCapabilityIds_shouldReturnNoContent() {
+        when(capabilityTechnologyUseCase.deleteTechnologiesByCapabilityIds(CAPABILITY_IDS)).thenReturn(Mono.empty());
+
+        webTestClient.delete()
+                .uri(uriBuilder -> uriBuilder
+                        .path(DELETE_TECHS_PATH)
+                        .queryParam(IDS_PARAM, "1", "2", "3")
+                        .build())
+                .exchange()
+                .expectStatus().isNoContent();
+    }
+
+    @Test
+    @DisplayName("DELETE /capabilities - listenDeleteTechnologiesByCapabilityIds: should return 400 when no ids are provided")
+    void deleteTechnologiesByCapabilityIds_shouldReturnBadRequestWhenNoIds() {
+        webTestClient.delete()
+                .uri(DELETE_TECHS_PATH)
+                .exchange()
+                .expectStatus().isBadRequest();
     }
 
 }

@@ -68,4 +68,52 @@ class CapabilityTechnologyRepositoryAdapterTest {
         StepVerifier.create(adapter.findTechnologyIdsByCapabilityId(capabilityId))
                 .verifyComplete();
     }
+
+    @Test
+    @DisplayName("findTechnologyIdsByCapabilityIds should return technology ids for multiple capabilities")
+    void findTechnologyIdsByCapabilityIds_shouldReturnIds() {
+        List<Long> capabilityIds = List.of(1L, 2L);
+        List<CapabilityTechnologyEntity> entities = List.of(
+                CapabilityTechnologyEntity.builder().capabilityId(1L).technologyId(10L).build(),
+                CapabilityTechnologyEntity.builder().capabilityId(2L).technologyId(20L).build()
+        );
+        when(repository.findAllByCapabilityIdIn(capabilityIds)).thenReturn(Flux.fromIterable(entities));
+
+        StepVerifier.create(adapter.findTechnologyIdsByCapabilityIds(capabilityIds))
+                .expectNext(10L, 20L)
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("findTechnologyIdsByCapabilityIds should return empty when none found")
+    void findTechnologyIdsByCapabilityIds_shouldReturnEmpty() {
+        List<Long> capabilityIds = List.of(3L, 4L);
+        when(repository.findAllByCapabilityIdIn(capabilityIds)).thenReturn(Flux.empty());
+
+        StepVerifier.create(adapter.findTechnologyIdsByCapabilityIds(capabilityIds))
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("countOtherCapacityAssociations should return count")
+    void countOtherCapacityAssociations_shouldReturnCount() {
+        Long technologyId = 1L;
+        List<Long> capabilityIds = List.of(2L, 3L);
+        when(repository.countByTechnologyIdAndCapabilityIdNotIn(technologyId, capabilityIds)).thenReturn(Mono.just(5L));
+
+        StepVerifier.create(adapter.countOtherCapacityAssociations(technologyId, capabilityIds))
+                .expectNext(5L)
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("deleteAssociationsByCapabilityIds should delete and complete transactionally")
+    void deleteAssociationsByCapabilityIds_shouldDeleteAndComplete() {
+        List<Long> capabilityIds = List.of(1L, 2L);
+        when(repository.deleteAllByCapabilityIdIn(capabilityIds)).thenReturn(Mono.empty());
+        when(transactionalOperator.transactional(ArgumentMatchers.<Mono<Object>>any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        StepVerifier.create(adapter.deleteAssociationsByCapabilityIds(capabilityIds))
+                .verifyComplete();
+    }
 }

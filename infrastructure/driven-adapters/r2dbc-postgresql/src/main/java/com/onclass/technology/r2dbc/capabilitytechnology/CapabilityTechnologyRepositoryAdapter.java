@@ -25,7 +25,6 @@ public class CapabilityTechnologyRepositoryAdapter extends ReactiveAdapterOperat
 
     private final TransactionalOperator transactionalOperator;
 
-    @Autowired
     public CapabilityTechnologyRepositoryAdapter(CapabilityTechnologyRepository repository, ObjectMapper mapper, TransactionalOperator transactionalOperator) {
         super(repository, mapper, d -> mapper.map(d, CapabilityTechnology.class));
         this.transactionalOperator = transactionalOperator;

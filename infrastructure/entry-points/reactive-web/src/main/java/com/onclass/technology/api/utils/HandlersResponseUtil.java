@@ -19,9 +19,9 @@ public class HandlersResponseUtil {
                 .build();
     }
 
-    public static ApiResponseDto buildBodyFailureResponse(String code, String message, List<String> errors) {
+    public static <T> ApiResponseDto<T> buildBodyFailureResponse(String code, String message, List<String> errors) {
         return ApiResponseDto
-                .builder()
+                .<T>builder()
                 .message(message)
                 .errors(errors)
                 .code(code)

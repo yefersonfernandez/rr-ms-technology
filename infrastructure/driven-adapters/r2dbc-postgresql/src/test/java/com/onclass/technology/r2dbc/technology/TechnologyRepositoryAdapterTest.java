@@ -103,4 +103,14 @@ class TechnologyRepositoryAdapterTest {
         StepVerifier.create(adapter.findTechnologyById(id))
                 .verifyComplete();
     }
+
+    @Test
+    @DisplayName("deleteTechnologiesByIds should delete all by ids and complete")
+    void deleteTechnologiesByIds_shouldDeleteAllAndComplete() {
+        List<Long> ids = List.of(1L, 2L, 3L);
+        when(repository.deleteAllById(ids)).thenReturn(Mono.empty());
+
+        StepVerifier.create(adapter.deleteTechnologiesByIds(ids))
+                .verifyComplete();
+    }
 }

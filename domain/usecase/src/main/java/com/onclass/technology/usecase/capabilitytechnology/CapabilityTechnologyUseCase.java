@@ -32,8 +32,7 @@ public class CapabilityTechnologyUseCase {
                         .filter(count -> count == ids.size())
                         .switchIfEmpty(Mono.error(new NotFoundException(ExceptionMessages.TECH_NOT_FOUND.format())))
                         .thenReturn(ids))
-                .flatMap(ids -> capabilityTechnologyRepositoryPort.saveAll(capabilityId, ids))
-                .then();
+                .flatMap(ids -> capabilityTechnologyRepositoryPort.saveAll(capabilityId, ids));
     }
 
     public Flux<Technology> getTechnologiesByCapabilityId(Long capabilityId) {
@@ -62,7 +61,6 @@ public class CapabilityTechnologyUseCase {
     private Mono<Void> executeOrphanTechnologiesDelete(List<Long> orphanTechIds) {
         return Mono.just(orphanTechIds)
                 .filter(ids -> !ids.isEmpty())
-                .flatMap(technologyRepositoryPort::deleteTechnologiesByIds)
-                .then();
+                .flatMap(technologyRepositoryPort::deleteTechnologiesByIds);
     }
 }

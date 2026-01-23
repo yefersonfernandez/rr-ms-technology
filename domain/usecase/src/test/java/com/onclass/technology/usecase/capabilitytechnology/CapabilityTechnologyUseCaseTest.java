@@ -105,4 +105,40 @@ class CapabilityTechnologyUseCaseTest {
                 .expectNext(TECH2)
                 .verifyComplete();
     }
+
+    @Test
+    void getTechnologiesByCapabilityId_shouldPropagateRepositoryError() {
+        when(capabilityTechnologyRepositoryPort.findTechnologyIdsByCapabilityId(CAPABILITY_ID)).thenReturn(Flux.fromIterable(TECH_IDS));
+        when(technologyRepositoryPort.findTechnologyById(1L)).thenReturn(Mono.error(new RuntimeException("DB error")));
+        StepVerifier.create(capabilityTechnologyUseCase.getTechnologiesByCapabilityId(CAPABILITY_ID))
+                .expectErrorMatches(throwable -> throwable instanceof RuntimeException && throwable.getMessage().equals("DB error"))
+                .verify();
+    }
+
+    @Test
+    void deleteTechnologiesByCapabilityIds_shouldDeleteOrphanAndAssociations() {
+        List<Long> capabilityIds = List.of(1L, 2L);
+        List<Long> techIds = List.of(10L, 20L);
+
+        when(capabilityTechnologyRepositoryPort.findTechnologyIdsByCapabilityIds(capabilityIds)).thenReturn(Flux.fromIterable(techIds));
+        when(capabilityTechnologyRepositoryPort.countOtherCapacityAssociations(10L, capabilityIds)).thenReturn(Mono.just(0L));
+        when(capabilityTechnologyRepositoryPort.countOtherCapacityAssociations(20L, capabilityIds)).thenReturn(Mono.just(1L));
+        when(technologyRepositoryPort.deleteTechnologiesByIds(List.of(10L))).thenReturn(Mono.empty());
+        when(capabilityTechnologyRepositoryPort.deleteAssociationsByCapabilityIds(capabilityIds)).thenReturn(Mono.empty());
+
+        StepVerifier.create(capabilityTechnologyUseCase.deleteTechnologiesByCapabilityIds(capabilityIds))
+                .verifyComplete();
+    }
+
+    @Test
+    void deleteTechnologiesByCapabilityIds_shouldSkipIfNoOrphans() {
+        List<Long> capabilityIds = List.of(1L);
+        List<Long> techIds = List.of(30L);
+        when(capabilityTechnologyRepositoryPort.findTechnologyIdsByCapabilityIds(capabilityIds)).thenReturn(Flux.fromIterable(techIds));
+        when(capabilityTechnologyRepositoryPort.countOtherCapacityAssociations(30L, capabilityIds)).thenReturn(Mono.just(2L));
+        when(capabilityTechnologyRepositoryPort.deleteAssociationsByCapabilityIds(capabilityIds)).thenReturn(Mono.empty());
+
+        StepVerifier.create(capabilityTechnologyUseCase.deleteTechnologiesByCapabilityIds(capabilityIds))
+                .verifyComplete();
+    }
 }
